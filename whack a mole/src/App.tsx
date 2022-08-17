@@ -1,62 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import "./App.css";
 
-// interface Mole {
-//   key: number;
-//   elem: Element;
-// }
-
 function App() {
   const [count, setCount] = useState(0);
-  const [buttons, setButtons] = useState<any>([]);
+  const [isStarted, setIsStarted] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
+
   function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  function startGame(id: any) {
-    id.target.disabled = true;
-    for (let i = 0; i < 6; i++) {
-      buttons.push(
-        <button
-          key={i}
-          style={{ width: "50px", height: "50px" }}
-          onClick={() => setCount((count) => count + 1)}
-        ></button>
-      );
-    }
 
-    setInterval(() => {
-      buttons.map((button: any) => {
-        if (getRandomInt(0, 5) === button.key) {
-          button.classList.add = "green";
-        }
-      });
-    }, 1000);
-    console.log(buttons);
+    let now = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    return now;
   }
+
+  useEffect(() => {
+    if (isStarted) {
+      let interval = setInterval(() => {
+        setActiveIndex(getRandomInt(0, 5));
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(interval);
+        setActiveIndex(null);
+        setTimeout(() => setCount(0), 2000);
+
+        setIsStarted(false);
+      }, getRandomInt(10000, 20000));
+    }
+  }, [isStarted]);
 
   //изменение цвета
-  function toggleRainbow(act: any) {
+  function toggleRainbow() {
     let color = 0;
+
     setInterval(function () {
       color = color + (1 % 360);
-      document.querySelectorAll("button").forEach((element: any) => {
-        element.style.borderColor = "hsl(" + color + ", 100%, 50%)"; // hsl(0, 100%, 50%)
-      });
+      document.querySelector("body").style.backgroundColor =
+        "hsl(" + color + ", 100%, 50%)"; // hsl(0, 100%, 50%)
     }, 50);
-    act.target.disabled = true;
   }
-
-
-
 
   return (
     <>
       <button
-        id="startGame"
-        onClick={startGame}
+        onClick={() => setIsStarted(true)}
         style={{
           display: "block",
           padding: "5px 5px",
@@ -65,13 +54,37 @@ function App() {
       >
         Start Game
       </button>
-      <div>
-        <button onClick={toggleRainbow} id="act">
-          Активировать подсветку
-        </button>
+      {/* <button onClick={() => setIsStarted(false)}>Stop game</button> */}
+      <button id="startRainbow" onClick={() => toggleRainbow()}>
+        Rainbow
+      </button>
+      <div></div>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
+      >
+        {count}
       </div>
-      <div>{count}</div>
-      <ul>{buttons}</ul>
+      {isStarted && (
+        <>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <button
+              key={index}
+              style={{
+                backgroundColor: activeIndex === index ? "green" : "white",
+              }}
+              onClick={() => {
+                if (activeIndex === index) {
+                  setCount(() => count + 1);
+                } else {
+                  setCount(() => count - 5);
+                }
+              }}
+            >
+              {index}
+            </button>
+          ))}
+        </>
+      )}
     </>
   );
 }
