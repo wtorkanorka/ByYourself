@@ -6,6 +6,7 @@ function App() {
   const [count, setCount] = useState(0);
   const [isStarted, setIsStarted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const [quantity, setQuantity] = useState(6);
 
   function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -19,7 +20,7 @@ function App() {
   useEffect(() => {
     if (isStarted) {
       let interval = setInterval(() => {
-        setActiveIndex(getRandomInt(0, 5));
+       setActiveIndex(getRandomInt(0, quantity - 1));
       }, 1000);
       setTimeout(() => {
         clearInterval(interval);
@@ -41,7 +42,7 @@ function App() {
         "hsl(" + color + ", 100%, 50%)"; // hsl(0, 100%, 50%)
     }, 50);
   }
-
+  useEffect(() => console.log(activeIndex));
   return (
     <>
       <button
@@ -54,20 +55,28 @@ function App() {
       >
         Start Game
       </button>
-      {/* <button onClick={() => setIsStarted(false)}>Stop game</button> */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button onClick={() => setQuantity(4)}>5</button>
+        <button onClick={() => setQuantity(5)}>6</button>
+        <button onClick={() => setQuantity(6)}>7</button>
+        <button onClick={() => setQuantity(7)}>8</button>
+        <button onClick={() => setQuantity(8)}>9</button>
+        <button onClick={() => setQuantity(9)}>10</button>
+      </div>
       <button id="startRainbow" onClick={() => toggleRainbow()}>
         Rainbow
       </button>
-      <div></div>
+
       <div
         style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
       >
         {count}
       </div>
       {isStarted && (
-        <>
-          {Array.from({ length: 6 }).map((_, index) => (
+        <div className="btn-group">
+          {Array.from({ length: quantity }).map((_, index) => (
             <button
+              className="btn-primary"
               key={index}
               style={{
                 backgroundColor: activeIndex === index ? "green" : "white",
@@ -83,32 +92,10 @@ function App() {
               {index}
             </button>
           ))}
-        </>
+        </div>
       )}
     </>
   );
 }
 
 export default App;
-{
-  /* <div className="li-container">
-<li className="li-element">
-  <button key={1}></button>
-</li>
-<li className="li-element">
-  <button key={2}></button>
-</li>
-<li className="li-element">
-  <button key={3}></button>
-</li>
-<li className="li-element">
-  <button key={4}></button>
-</li>
-<li className="li-element">
-  <button key={5}></button>
-</li>
-<li className="li-element">
-  <button key={6}></button>
-</li>
-</div> */
-}
