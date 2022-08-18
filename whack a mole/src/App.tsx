@@ -21,7 +21,7 @@ function App() {
     if (isStarted) {
       let interval = setInterval(() => {
        setActiveIndex(getRandomInt(0, quantity - 1));
-      }, 1000);
+      }, getRandomInt(200, 700));
       setTimeout(() => {
         clearInterval(interval);
         setActiveIndex(null);
@@ -56,12 +56,12 @@ function App() {
         Start Game
       </button>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button onClick={() => setQuantity(4)}>5</button>
-        <button onClick={() => setQuantity(5)}>6</button>
-        <button onClick={() => setQuantity(6)}>7</button>
-        <button onClick={() => setQuantity(7)}>8</button>
-        <button onClick={() => setQuantity(8)}>9</button>
-        <button onClick={() => setQuantity(9)}>10</button>
+        <button onClick={() => setQuantity(5)}>5</button>
+        <button onClick={() => setQuantity(6)}>6</button>
+        <button onClick={() => setQuantity(7)}>7</button>
+        <button onClick={() => setQuantity(8)}>8</button>
+        <button onClick={() => setQuantity(9)}>9</button>
+        <button onClick={() => setQuantity(10)}>10</button>
       </div>
       <button id="startRainbow" onClick={() => toggleRainbow()}>
         Rainbow
@@ -79,7 +79,7 @@ function App() {
               className="btn-primary"
               key={index}
               style={{
-                backgroundColor: activeIndex === index ? "green" : "white",
+                backgroundColor: activeIndex === index ? "green" : 'white',
               }}
               onClick={() => {
                 if (activeIndex === index) {
