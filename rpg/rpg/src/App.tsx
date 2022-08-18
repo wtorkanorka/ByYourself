@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
+
 import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
   // const [controle, setControle] = useState(1);
-  const [isStarted, setIsStarted] = useState(true);
+  const [isStarted, setIsStarted] = useState<Boolean>(false);
   const [positionVertical, setPositionVertical] = useState(400);
   const [positionHorizontal, setPositionHorizontal] = useState(400);
   const [npcPositionVertical, setNpcPositionVertical] = useState(400);
@@ -22,26 +22,34 @@ function App() {
     return randomeNumber;
   }
 
-  // setInterval(() => {
-  //   console.log(getRandomInt(400, 500));
-  //   setNpcPositionVertical(getRandomInt(400, 500));
-  //   setNpcPositionHorizontal(getRandomInt(400, 500));
-  // }, 1000);
-useEffect(() => {
-  setNpcPositionVertical(positionVertical)
-  setNpcPositionHorizontal(positionHorizontal)
-})
+  useEffect(() => {
+    console.log(positionHorizontal, positionVertical);
+    setInterval(() => {
+      setNpcPositionVertical(
+        getRandomInt(npcPositionVertical, positionVertical)
+      );
+      setNpcPositionHorizontal(
+        getRandomInt(npcPositionHorizontal, positionHorizontal)
+      );
+      console.log("first interval", npcPositionVertical, npcPositionHorizontal);
+    }, 2000);
+    setInterval(() => {
+      setNpcPositionVertical(positionVertical);
+      setNpcPositionHorizontal(positionHorizontal);
+      console.log("second interval", positionVertical, positionHorizontal);
+    }, 1000);
+  }, [npcPositionHorizontal, npcPositionVertical, isStarted]);
 
-console.log(count)
   return (
     <>
+      <button onClick={() => setIsStarted(true)}>Start game</button>
       <div
         className="player"
         style={{ top: positionVertical, left: positionHorizontal }}
       ></div>
       <div
         className="npc"
-        style={{ top: npcPositionVertical , left: npcPositionHorizontal }}
+        style={{ top: npcPositionVertical, left: npcPositionHorizontal }}
       ></div>
 
       <div className="controle">
