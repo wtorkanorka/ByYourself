@@ -1,0 +1,35 @@
+.container {
+  height: 100vh;
+  width: 100%;
+}
+
+.player {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(255, 230, 184);
+  position: absolute;
+  transition: 0.2s;
+}
+.controle {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  align-items: center;
+  flex-direction: column;
+  align-items: center;
+  left: 45%;
+}
+.controle button {
+  width: 75px;
+  height: 75px;
+}
+
+.npc {
+    width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: green;
+  position: absolute;
+  transition: 1.5s;
+}
