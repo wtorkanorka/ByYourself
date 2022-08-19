@@ -1,11 +1,26 @@
-import { useState, useEffect } from "react";
-import money from "./assets/money.png";
+import { useState, useEffect, useCallback } from "react";
+
 import "./App.css";
+
+let endGame: number = getRandomInt(1, 5);
+let death = getRandomInt(-15, -5);
+function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  let randomeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+
+  return randomeNumber;
+}
+
 
 function App() {
   const [count, setCount] = useState(0);
   const [controle, setControle] = useState(false);
-
+  const [finish, setFinish] = useState(false);
+  // const [endGameString, setEndGameString] = useState("");
+  const [timer, setTimer] = useState(0);
+  const [deathWindow, setDeathWindow] = useState(false);
   // const [isStarted, setIsStarted] = useState<Boolean>(false);
   const [positionVertical, setPositionVertical] = useState(400);
   const [positionHorizontal, setPositionHorizontal] = useState(400);
@@ -14,41 +29,23 @@ function App() {
     useState(1000);
   const [fruitPositionHorizontal, setFruitPositionHorizontal] = useState(700);
   const [fruitPositionVertical, setFruitPositionVertical] = useState(700);
-  // const controleButtons = ["w", "a", "s", "d"]; 
+  // const controleButtons = ["w", "a", "s", "d"];
 
-  function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-
-    let randomeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    return randomeNumber;
-  }
-
+ 
+  
+ 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-      if (controle) {
-        if (e.key === "w") {
-          setPositionVertical(positionVertical - 50);
-        }
-        if (e.key === "a") {
-          setPositionHorizontal(positionHorizontal - 50);
-        }
-        if (e.key === "s") {
-          setPositionVertical(positionVertical + 50);
-        }
-        if (e.key === "d") {
-          setPositionHorizontal(positionHorizontal + 50);
-        }
-      }
-    });
-    // setInterval(() => {
-    // setNpcPositionVertical(getRandomInt(zombiePositionVertical, positionVertical));
-    // setNpcPositionHorizontal(
-    //   getRandomInt(zombiePositionHorizontal, positionHorizontal)
-    // );
-    // console.log("first interval", zombiePositionVertical, zombiePositionHorizontal);
-    // }, 2000);
+    setInterval(() => {
+      setTimer(() => timer + 1);
+    }, 1000);
+
+    if (count === endGame) {
+      setFinish(true);
+    }
+
+    if (count <= death) {
+      setDeathWindow(true);
+    }
 
     if (
       //если координаты фрукта и игрока совпадают то фрукт уходит за экран, чтобы его нельзя было еще раз взять
@@ -74,18 +71,59 @@ function App() {
         setCount(() => count - 5);
       }
     }, 100);
+    if (finish) {
+      clearInterval(interval);
+      setCount(0);
+      setPositionVertical(400);
+      setPositionHorizontal(400);
+      setZombiePositionVertical(0);
+      setZombiePositionHorizontal(0);
+      setFruitPositionHorizontal(0);
+      setFruitPositionVertical(0);
+      setTimer(0)
+    }
+    document.addEventListener("keydown", (e) => {
+      if (controle) {
+        if (e.key === "w") {
+          setPositionVertical(positionVertical - 50);
+        } else if (e.key === "a") {
+          setPositionHorizontal(positionHorizontal - 50);
+        } else if (e.key === "s") {
+          setPositionVertical(positionVertical + 50);
+        } else {
+          setPositionHorizontal(positionHorizontal + 50);
+        }
+      }
+    });
   }, [
-    zombiePositionHorizontal,
-    zombiePositionVertical,
-    positionHorizontal,
-    positionVertical,
-    controle,
+    // zombiePositionHorizontal,
+    // zombiePositionVertical,
+    // positionHorizontal,
+    // positionVertical,
+    // controle,
+    timer,
   ]);
 
+  function endGameFinal() {
+    if (finish) {
+      return "Игра пройдена";
+    } else {
+      return "Вас съели";
+    }
+  }
   return (
     <>
-      {/* <button onClick={() => setIsStarted(true)}>Start game</button> */}
-      <div>{count}</div>
+      <div
+        className="endGame"
+        style={{ display: finish || deathWindow ? "flex" : "none" }}
+      >
+        {endGameFinal()}
+      </div>
+
+      <div>
+        {death}/{count}/{endGame}
+        Таймер: {timer}
+      </div>
       <button onClick={() => setControle(true)}>Клавиатура</button>
       <button onClick={() => setControle(false)}>Экранная клавиатура</button>
       <div
