@@ -4,6 +4,7 @@ import "./App.css";
 
 let endGame: number = getRandomInt(1, 5);
 let death = getRandomInt(-15, -5);
+// let death = -1;
 function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
   max = Math.floor(max);
