@@ -13,7 +13,6 @@ function getRandomInt(min: number, max: number) {
   return randomeNumber;
 }
 
-
 function App() {
   const [count, setCount] = useState(0);
   const [controle, setControle] = useState(false);
@@ -30,15 +29,28 @@ function App() {
   const [fruitPositionHorizontal, setFruitPositionHorizontal] = useState(700);
   const [fruitPositionVertical, setFruitPositionVertical] = useState(700);
   // const controleButtons = ["w", "a", "s", "d"];
-
- 
-  
- 
+  function buttonControle() {
+    document.addEventListener("keydown", (e) => {
+      if (controle) {
+        if (e.key === "w") {
+          setPositionVertical(positionVertical - 50);
+        } else if (e.key === "a") {
+          setPositionHorizontal(positionHorizontal - 50);
+        } else if (e.key === "s") {
+          setPositionVertical(positionVertical + 50);
+        } else if (e.key === "d") {
+          setPositionHorizontal(positionHorizontal + 50);
+        }
+      }
+    });
+  }
   useEffect(() => {
-    setInterval(() => {
+    let interval = setInterval(() => {
       setTimer(() => timer + 1);
+      clearInterval(interval);
     }, 1000);
-
+  }, [timer]);
+  useEffect(() => {
     if (count === endGame) {
       setFinish(true);
     }
@@ -80,27 +92,15 @@ function App() {
       setZombiePositionHorizontal(0);
       setFruitPositionHorizontal(0);
       setFruitPositionVertical(0);
-      setTimer(0)
+      setTimer(0);
     }
-    document.addEventListener("keydown", (e) => {
-      if (controle) {
-        if (e.key === "w") {
-          setPositionVertical(positionVertical - 50);
-        } else if (e.key === "a") {
-          setPositionHorizontal(positionHorizontal - 50);
-        } else if (e.key === "s") {
-          setPositionVertical(positionVertical + 50);
-        } else {
-          setPositionHorizontal(positionHorizontal + 50);
-        }
-      }
-    });
+    buttonControle();
   }, [
     // zombiePositionHorizontal,
     // zombiePositionVertical,
     // positionHorizontal,
     // positionVertical,
-    // controle,
+    controle,
     timer,
   ]);
 
@@ -111,6 +111,14 @@ function App() {
       return "Вас съели";
     }
   }
+  function rythm() {
+    if (timer % 2 === 0) {
+      return "green";
+    } else {
+      return "rgb(104, 107, 255)";
+    }
+  }
+
   return (
     <>
       <div
@@ -120,12 +128,27 @@ function App() {
         {endGameFinal()}
       </div>
 
-      <div>
-        {death}/{count}/{endGame}
-        Таймер: {timer}
+      <div className="interface">
+        <div className="interface-element">Очков до смерти: {death}</div>/<div className="interface-element">Текущий счет: {count}</div>/
+        <div className="interface-element">Очков до завершения игры: {endGame}</div>
+        <div className="interface-element">Таймер: {timer}</div>
+        <br />
+        <div className="interface-element">Режим игры: {controle ? "Ритм" : "speedrun"}</div>
+        <div
+          style={{
+            width: "50px",
+            height: "50px",
+            backgroundColor: controle ? rythm() : "white;",
+          }}
+        ></div>
+        <div style={{ display: "flex" }}>
+          <button onClick={() => setControle(true)}>Клавиатура</button>
+          <button onClick={() => setControle(false)}>
+            Экранная клавиатура
+          </button>
+        </div>
       </div>
-      <button onClick={() => setControle(true)}>Клавиатура</button>
-      <button onClick={() => setControle(false)}>Экранная клавиатура</button>
+
       <div
         className="player"
         style={{ top: positionVertical, left: positionHorizontal }}
